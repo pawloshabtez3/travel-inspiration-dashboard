@@ -19,6 +19,13 @@ export interface Destination {
   weather?: WeatherData;
 }
 
+export type ErrorType = 'gemini' | 'unsplash' | 'weather' | 'network' | 'storage' | 'generic';
+
+export interface AppError {
+  message: string;
+  type: ErrorType;
+}
+
 interface AppState {
   // Current mood selection
   selectedMood: string | null;
@@ -26,7 +33,7 @@ interface AppState {
   // Destination data
   destinations: Destination[];
   isLoading: boolean;
-  error: string | null;
+  error: AppError | null;
   
   // Favorites (persisted to localStorage)
   favorites: Destination[];
@@ -38,7 +45,7 @@ interface AppState {
   clearError: () => void;
   setDestinations: (destinations: Destination[]) => void;
   setLoading: (isLoading: boolean) => void;
-  setError: (error: string | null) => void;
+  setError: (error: AppError | null) => void;
 }
 
 // Create store with persistence middleware for favorites
@@ -87,8 +94,23 @@ export const useStore = create<AppState>()(
           set({ destinations: destinationsWithWeather, isLoading: false });
         } catch (error) {
           console.error('Failed to fetch destinations:', error);
+          
+          // Determine error type
+          let errorType: ErrorType = 'generic';
+          let errorMessage = 'Unable to fetch destinations. Please try again.';
+          
+          if (error instanceof Error) {
+            if (error.message.includes('network') || error.message.includes('fetch')) {
+              errorType = 'network';
+              errorMessage = 'Connection lost. Check your internet and try again.';
+            } else if (error.message.includes('API key')) {
+              errorType = 'gemini';
+              errorMessage = 'API configuration error. Please check your settings.';
+            }
+          }
+          
           set({ 
-            error: 'Unable to fetch destinations. Please try again.',
+            error: { message: errorMessage, type: errorType },
             isLoading: false 
           });
         }
@@ -113,10 +135,19 @@ export const useStore = create<AppState>()(
           if (error instanceof Error && error.name === 'QuotaExceededError') {
             console.error('localStorage quota exceeded. Unable to save favorite.');
             set({ 
-              error: 'Storage limit reached. Please remove some favorites to add new ones.' 
+              error: { 
+                message: 'Storage limit reached. Please remove some favorites to add new ones.',
+                type: 'storage'
+              }
             });
           } else {
             console.error('Failed to toggle favorite:', error);
+            set({ 
+              error: { 
+                message: 'Failed to save favorite. Please try again.',
+                type: 'storage'
+              }
+            });
           }
         }
       },
@@ -137,7 +168,7 @@ export const useStore = create<AppState>()(
       },
 
       // Set error state
-      setError: (error: string | null) => {
+      setError: (error: AppError | null) => {
         set({ error });
       }
     }),

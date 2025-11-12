@@ -2,6 +2,7 @@ import axios from 'axios';
 import { Destination } from './store';
 import { API_ENDPOINTS, ERROR_MESSAGES, CONFIG } from './constants';
 import { fetchDestinationImages } from './api';
+import { hasApiKey, getMissingKeyError } from './envValidation';
 
 interface GeminiResponse {
   candidates?: Array<{
@@ -120,12 +121,14 @@ function generateDestinationId(name: string, country: string): string {
 
 // Main function to get destinations by mood
 export async function getDestinationsByMood(mood: string): Promise<Destination[]> {
-  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
-
-  if (!apiKey) {
-    console.error(ERROR_MESSAGES.MISSING_API_KEY);
+  // Validate API key before making request
+  if (!hasApiKey('NEXT_PUBLIC_GEMINI_API_KEY')) {
+    console.error(getMissingKeyError('NEXT_PUBLIC_GEMINI_API_KEY'));
+    console.warn('Using fallback destinations instead');
     return getFallbackDestinations(mood);
   }
+
+  const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 
   try {
     const prompt = `Suggest exactly ${CONFIG.DESTINATIONS_PER_MOOD} travel destinations for someone seeking a ${mood} experience. 

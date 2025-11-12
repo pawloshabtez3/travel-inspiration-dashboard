@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { WeatherData } from './store';
 import { API_ENDPOINTS, ERROR_MESSAGES, CONFIG, DEFAULT_IMAGE_URL } from './constants';
+import { hasApiKey, getMissingKeyError } from './envValidation';
 
 // Configure axios interceptors
 const apiClient = axios.create({
@@ -59,12 +60,14 @@ export async function fetchDestinationImage(destinationName: string): Promise<st
     return imageCache.get(cacheKey)!;
   }
 
-  const apiKey = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY;
-  
-  if (!apiKey) {
-    console.error(ERROR_MESSAGES.MISSING_API_KEY);
+  // Validate API key before making request
+  if (!hasApiKey('NEXT_PUBLIC_UNSPLASH_ACCESS_KEY')) {
+    console.error(getMissingKeyError('NEXT_PUBLIC_UNSPLASH_ACCESS_KEY'));
+    imageCache.set(cacheKey, DEFAULT_IMAGE_URL);
     return DEFAULT_IMAGE_URL;
   }
+
+  const apiKey = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY;
 
   try {
     const response = await retryRequest(() =>
@@ -100,12 +103,13 @@ export async function fetchDestinationImage(destinationName: string): Promise<st
 
 // OpenWeatherMap API client
 export async function fetchWeather(cityName: string): Promise<WeatherData | null> {
-  const apiKey = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
-  
-  if (!apiKey) {
-    console.error(ERROR_MESSAGES.MISSING_API_KEY);
+  // Validate API key before making request
+  if (!hasApiKey('NEXT_PUBLIC_OPENWEATHER_API_KEY')) {
+    console.error(getMissingKeyError('NEXT_PUBLIC_OPENWEATHER_API_KEY'));
     return null;
   }
+
+  const apiKey = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
 
   try {
     const response = await retryRequest(() =>
