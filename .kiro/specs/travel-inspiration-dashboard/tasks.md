@@ -51,19 +51,29 @@
     - Add request validation and response sanitization
     - _Requirements: 2.2, 2.3_
 
-- [ ] 3. Build landing page and navigation
-  - [ ] 3.1 Create root layout component
+- [x] 3. Build landing page and navigation
+
+
+
+
+  - [x] 3.1 Create root layout component
+
+
     - Set up app/layout.tsx with metadata and global providers
     - Add font configuration (Inter or Plus Jakarta Sans)
     - Include Zustand store provider if needed
     - _Requirements: 1.1_
-  - [ ] 3.2 Implement landing page with hero section
+  - [x] 3.2 Implement landing page with hero section
+
+
     - Create app/page.tsx with hero section and tagline
     - Add Framer Motion animations for hero text (fade-in and slide-up)
     - Implement call-to-action button with navigation to /explore
     - Style with gradient background and glassmorphism effects
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
-  - [ ] 3.3 Create Header component
+  - [x] 3.3 Create Header component
+
+
     - Build navigation header with logo/title
     - Add responsive layout for mobile and desktop
     - Include link back to landing page from explore page
