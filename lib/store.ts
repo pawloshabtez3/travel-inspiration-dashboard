@@ -96,15 +96,28 @@ export const useStore = create<AppState>()(
 
       // Toggle favorite status
       toggleFavorite: (destination: Destination) => {
-        const { favorites } = get();
-        const isFavorite = favorites.some(fav => fav.id === destination.id);
-        
-        if (isFavorite) {
-          // Remove from favorites
-          set({ favorites: favorites.filter(fav => fav.id !== destination.id) });
-        } else {
-          // Add to favorites
-          set({ favorites: [...favorites, destination] });
+        try {
+          const { favorites } = get();
+          const isFavorite = favorites.some(fav => fav.id === destination.id);
+          
+          if (isFavorite) {
+            // Remove from favorites
+            set({ favorites: favorites.filter(fav => fav.id !== destination.id) });
+          } else {
+            // Add to favorites
+            const newFavorites = [...favorites, destination];
+            set({ favorites: newFavorites });
+          }
+        } catch (error) {
+          // Handle localStorage quota exceeded error
+          if (error instanceof Error && error.name === 'QuotaExceededError') {
+            console.error('localStorage quota exceeded. Unable to save favorite.');
+            set({ 
+              error: 'Storage limit reached. Please remove some favorites to add new ones.' 
+            });
+          } else {
+            console.error('Failed to toggle favorite:', error);
+          }
         }
       },
 
@@ -132,7 +145,15 @@ export const useStore = create<AppState>()(
       name: 'travel-dashboard-storage',
       storage: createJSONStorage(() => localStorage),
       // Only persist favorites
-      partialize: (state) => ({ favorites: state.favorites })
+      partialize: (state) => ({ favorites: state.favorites }),
+      // Handle storage errors
+      onRehydrateStorage: () => (state, error) => {
+        if (error) {
+          console.error('Failed to load favorites from localStorage:', error);
+        } else if (state) {
+          console.log('Favorites loaded from localStorage:', state.favorites.length);
+        }
+      }
     }
   )
 );

@@ -3,6 +3,7 @@
 import { useStore } from '@/lib/store';
 import MoodSelector from '@/components/MoodSelector';
 import DestinationGrid from '@/components/DestinationGrid';
+import FavoritesPanel from '@/components/FavoritesPanel';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ExplorePage() {
@@ -11,8 +12,10 @@ export default function ExplorePage() {
     destinations, 
     isLoading, 
     error, 
+    favorites,
     fetchDestinations,
-    clearError 
+    clearError,
+    toggleFavorite
   } = useStore();
 
   const handleMoodSelect = async (mood: string) => {
@@ -110,6 +113,17 @@ export default function ExplorePage() {
         {/* Destination Grid */}
         <DestinationGrid />
       </motion.div>
+
+      {/* Favorites Panel */}
+      <FavoritesPanel 
+        favorites={favorites}
+        onRemoveFavorite={(id) => {
+          const destination = favorites.find(fav => fav.id === id);
+          if (destination) {
+            toggleFavorite(destination);
+          }
+        }}
+      />
     </main>
   );
 }
