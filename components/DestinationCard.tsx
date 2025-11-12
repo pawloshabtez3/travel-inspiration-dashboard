@@ -32,7 +32,7 @@ export default function DestinationCard({
       className="relative bg-white rounded-xl shadow-lg overflow-hidden group cursor-pointer"
     >
       {/* Image Container */}
-      <div className="relative h-64 w-full">
+      <div className="relative h-56 sm:h-64 lg:h-72 w-full">
         <Image
           src={destination.imageUrl}
           alt={`${destination.name}, ${destination.country}`}
@@ -57,7 +57,7 @@ export default function DestinationCard({
             transition: { duration: 0.2 }
           }}
           whileTap={{ scale: 0.9 }}
-          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/90 backdrop-blur-sm shadow-md"
+          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/90 backdrop-blur-sm shadow-md min-w-[44px] min-h-[44px] flex items-center justify-center"
           aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
         >
           <motion.svg
@@ -85,10 +85,10 @@ export default function DestinationCard({
         </motion.button>
         
         {/* Content Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-          <h3 className="text-2xl font-bold mb-1">{destination.name}</h3>
-          <p className="text-sm text-gray-200 mb-2">{destination.country}</p>
-          <p className="text-sm text-gray-100 line-clamp-2">{destination.tagline}</p>
+        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white">
+          <h3 className="text-xl sm:text-2xl font-bold mb-1">{destination.name}</h3>
+          <p className="text-xs sm:text-sm text-gray-200 mb-2">{destination.country}</p>
+          <p className="text-xs sm:text-sm text-gray-100 line-clamp-2">{destination.tagline}</p>
         </div>
       </div>
       

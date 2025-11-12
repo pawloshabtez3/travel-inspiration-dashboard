@@ -31,13 +31,13 @@ export default function Home() {
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
       
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center px-4 text-center">
+      <div className="relative z-10 flex flex-col items-center justify-center px-4 sm:px-6 text-center">
         {/* Hero Text with Animations */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="text-5xl font-bold text-white sm:text-6xl md:text-7xl lg:text-8xl"
+          className="text-4xl font-bold text-white sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-tight"
         >
           Find your next destination
         </motion.h1>
@@ -46,7 +46,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
-          className="mt-6 text-xl text-white/90 sm:text-2xl md:text-3xl"
+          className="mt-4 sm:mt-6 text-lg text-white/90 sm:text-xl md:text-2xl lg:text-3xl"
         >
           by mood
         </motion.p>
@@ -56,11 +56,11 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4, ease: 'easeOut' }}
-          className="mt-12"
+          className="mt-8 sm:mt-12"
         >
           <Link
             href="/explore"
-            className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-white/20 px-8 py-4 text-lg font-semibold text-white backdrop-blur-md transition-all duration-300 hover:bg-white/30 hover:scale-105 border border-white/30"
+            className="group relative inline-flex items-center justify-center overflow-hidden rounded-full bg-white/20 px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg font-semibold text-white backdrop-blur-md transition-all duration-300 hover:bg-white/30 hover:scale-105 border border-white/30 min-h-[48px]"
           >
             <span className="relative z-10">Start Exploring</span>
             <svg
@@ -84,7 +84,7 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 0.6 }}
-          className="mt-16 text-sm text-white/70"
+          className="mt-12 sm:mt-16 text-xs sm:text-sm text-white/70 px-4"
         >
           Powered by AI • Discover destinations that match your vibe
         </motion.div>

@@ -36,19 +36,19 @@ export default function ExplorePage() {
 
   return (
     <motion.main 
-      className="min-h-screen pt-16 bg-gradient-to-br from-gray-50 to-gray-100"
+      className="min-h-screen pt-16 lg:pt-20 pb-24 md:pb-8 bg-gradient-to-br from-gray-50 to-gray-100"
       variants={pageVariants}
       initial="initial"
       animate="animate"
       exit="exit"
       transition={pageTransition}
     >
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 py-6 md:py-8 lg:py-10 max-w-7xl">
+        <div className="text-center mb-6 md:mb-8">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-2">
             Explore Destinations
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm sm:text-base text-gray-600 px-4">
             Select a mood to discover your perfect destination
           </p>
         </div>
@@ -70,7 +70,7 @@ export default function ExplorePage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
                   <svg 
-                    className="w-5 h-5 text-red-500" 
+                    className="w-5 h-5 lg:w-6 lg:h-6 text-red-500 flex-shrink-0" 
                     fill="currentColor" 
                     viewBox="0 0 20 20"
                   >
@@ -80,7 +80,7 @@ export default function ExplorePage() {
                       clipRule="evenodd" 
                     />
                   </svg>
-                  <p className="text-red-800 font-medium">{error}</p>
+                  <p className="text-sm lg:text-base text-red-800 font-medium">{error}</p>
                 </div>
                 <button
                   onClick={clearError}
@@ -118,7 +118,7 @@ export default function ExplorePage() {
           >
             <div className="flex items-center justify-center space-x-4">
               <LoadingSpinner size="md" />
-              <p className="text-blue-800 font-medium">
+              <p className="text-sm lg:text-base text-blue-800 font-medium">
                 Discovering amazing destinations for you...
               </p>
             </div>

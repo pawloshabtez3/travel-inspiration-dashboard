@@ -10,12 +10,12 @@ interface MoodSelectorProps {
 
 export default function MoodSelector({ onMoodSelect, selectedMood }: MoodSelectorProps) {
   return (
-    <div className="w-full mb-12">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+    <div className="w-full mb-8 md:mb-12">
+      <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-4 md:mb-6 text-center px-4">
         How are you feeling?
       </h2>
       
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
         {MOOD_CATEGORIES.map((mood) => (
           <MoodButton
             key={mood.id}
@@ -40,8 +40,8 @@ function MoodButton({ mood, isSelected, onClick }: MoodButtonProps) {
     <motion.button
       onClick={onClick}
       className={`
-        relative overflow-hidden rounded-2xl p-6 
-        transition-all duration-200
+        relative overflow-hidden rounded-2xl p-4 sm:p-5 lg:p-6 
+        transition-all duration-200 min-h-[100px] sm:min-h-[120px]
         ${isSelected 
           ? 'ring-4 ring-blue-500 shadow-xl scale-105' 
           : 'ring-2 ring-gray-200 hover:ring-gray-300 hover:shadow-lg'
@@ -68,10 +68,10 @@ function MoodButton({ mood, isSelected, onClick }: MoodButtonProps) {
       
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center space-y-2">
-        <span className="text-4xl" role="img" aria-label={mood.label}>
+        <span className="text-3xl sm:text-4xl" role="img" aria-label={mood.label}>
           {mood.emoji}
         </span>
-        <span className="text-sm font-semibold text-white drop-shadow-md">
+        <span className="text-xs sm:text-sm font-semibold text-white drop-shadow-md">
           {mood.label}
         </span>
       </div>
