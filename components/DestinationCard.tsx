@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Destination } from '@/lib/store';
 import { CONFIG } from '@/lib/constants';
+import WeatherWidget from './WeatherWidget';
 
 interface DestinationCardProps {
   destination: Destination;
@@ -73,6 +74,14 @@ export default function DestinationCard({
           <p className="text-sm text-gray-200 mb-2">{destination.country}</p>
           <p className="text-sm text-gray-100 line-clamp-2">{destination.tagline}</p>
         </div>
+      </div>
+      
+      {/* Weather Widget */}
+      <div className="p-4">
+        <WeatherWidget 
+          destinationName={destination.name}
+          weather={destination.weather}
+        />
       </div>
     </motion.div>
   );

@@ -64,9 +64,27 @@ export const useStore = create<AppState>()(
         try {
           // Dynamic import to avoid circular dependencies
           const { getDestinationsByMood } = await import('./geminiClient');
+          const { fetchWeather } = await import('./api');
+          
           const destinations = await getDestinationsByMood(mood);
           
-          set({ destinations, isLoading: false });
+          // Fetch weather data for each destination
+          const destinationsWithWeather = await Promise.all(
+            destinations.map(async (destination) => {
+              try {
+                const weather = await fetchWeather(destination.name);
+                return {
+                  ...destination,
+                  weather: weather || undefined
+                };
+              } catch (error) {
+                console.error(`Failed to fetch weather for ${destination.name}:`, error);
+                return destination;
+              }
+            })
+          );
+          
+          set({ destinations: destinationsWithWeather, isLoading: false });
         } catch (error) {
           console.error('Failed to fetch destinations:', error);
           set({ 
