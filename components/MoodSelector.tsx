@@ -47,17 +47,23 @@ function MoodButton({ mood, isSelected, onClick }: MoodButtonProps) {
           : 'ring-2 ring-gray-200 hover:ring-gray-300 hover:shadow-lg'
         }
       `}
-      whileHover={{ scale: isSelected ? 1.05 : 1.02 }}
+      whileHover={{ 
+        scale: isSelected ? 1.05 : 1.02,
+        transition: { duration: 0.2 }
+      }}
       whileTap={{ scale: 0.98 }}
       title={mood.description}
     >
-      {/* Gradient Background */}
-      <div 
+      {/* Gradient Background with Brightness Hover Effect */}
+      <motion.div 
         className={`
           absolute inset-0 bg-gradient-to-br ${mood.gradient}
-          ${isSelected ? 'opacity-100' : 'opacity-80 hover:opacity-90'}
-          transition-opacity duration-200
+          ${isSelected ? 'opacity-100' : 'opacity-80'}
         `}
+        whileHover={{ 
+          filter: 'brightness(1.15)',
+          transition: { duration: 0.2 }
+        }}
       />
       
       {/* Content */}

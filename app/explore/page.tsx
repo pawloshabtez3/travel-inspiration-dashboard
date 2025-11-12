@@ -4,7 +4,19 @@ import { useStore } from '@/lib/store';
 import MoodSelector from '@/components/MoodSelector';
 import DestinationGrid from '@/components/DestinationGrid';
 import FavoritesPanel from '@/components/FavoritesPanel';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const pageVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 }
+};
+
+const pageTransition = {
+  duration: 0.4,
+  ease: 'easeInOut' as const
+};
 
 export default function ExplorePage() {
   const { 
@@ -23,13 +35,15 @@ export default function ExplorePage() {
   };
 
   return (
-    <main className="min-h-screen pt-16 bg-gradient-to-br from-gray-50 to-gray-100">
-      <motion.div 
-        className="container mx-auto px-4 py-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-      >
+    <motion.main 
+      className="min-h-screen pt-16 bg-gradient-to-br from-gray-50 to-gray-100"
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={pageTransition}
+    >
+      <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
             Explore Destinations
@@ -97,12 +111,13 @@ export default function ExplorePage() {
         {/* Loading Indicator */}
         {isLoading && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="mb-6 p-6 bg-blue-50 border border-blue-200 rounded-lg"
           >
-            <div className="flex items-center space-x-3">
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+            <div className="flex items-center justify-center space-x-4">
+              <LoadingSpinner size="md" />
               <p className="text-blue-800 font-medium">
                 Discovering amazing destinations for you...
               </p>
@@ -112,7 +127,7 @@ export default function ExplorePage() {
 
         {/* Destination Grid */}
         <DestinationGrid />
-      </motion.div>
+      </div>
 
       {/* Favorites Panel */}
       <FavoritesPanel 
@@ -124,6 +139,6 @@ export default function ExplorePage() {
           }
         }}
       />
-    </main>
+    </motion.main>
   );
 }

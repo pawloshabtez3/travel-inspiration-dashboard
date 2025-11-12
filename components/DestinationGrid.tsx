@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useStore } from '@/lib/store';
 import { CONFIG } from '@/lib/constants';
 import DestinationCard from './DestinationCard';
+import DestinationCardSkeleton from './DestinationCardSkeleton';
 
 export default function DestinationGrid() {
   const destinations = useStore((state) => state.destinations);
@@ -11,15 +12,26 @@ export default function DestinationGrid() {
   const favorites = useStore((state) => state.favorites);
   const toggleFavorite = useStore((state) => state.toggleFavorite);
 
-  // Loading state
+  // Loading state with skeleton screens
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mb-4"></div>
-          <p className="text-gray-600">Finding your perfect destinations...</p>
-        </div>
-      </div>
+      <motion.div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-4 lg:gap-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        {[1, 2, 3].map((index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+          >
+            <DestinationCardSkeleton />
+          </motion.div>
+        ))}
+      </motion.div>
     );
   }
 

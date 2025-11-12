@@ -23,7 +23,11 @@ export default function DestinationCard({
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0 }
       }}
-      whileHover={{ scale: CONFIG.HOVER_SCALE }}
+      whileHover={{ 
+        scale: CONFIG.HOVER_SCALE,
+        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        transition: { duration: 0.2 }
+      }}
       transition={{ duration: 0.2 }}
       className="relative bg-white rounded-xl shadow-lg overflow-hidden group cursor-pointer"
     >
@@ -47,9 +51,13 @@ export default function DestinationCard({
             e.stopPropagation();
             onToggleFavorite();
           }}
-          whileHover={{ scale: 1.1 }}
+          whileHover={{ 
+            scale: 1.1,
+            backgroundColor: 'rgba(255, 255, 255, 1)',
+            transition: { duration: 0.2 }
+          }}
           whileTap={{ scale: 0.9 }}
-          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/90 backdrop-blur-sm hover:bg-white transition-all duration-200 shadow-md"
+          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/90 backdrop-blur-sm shadow-md"
           aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
         >
           <motion.svg
@@ -58,11 +66,15 @@ export default function DestinationCard({
             fill={isFavorite ? 'currentColor' : 'none'}
             stroke="currentColor"
             strokeWidth="2"
-            className={`w-6 h-6 transition-colors duration-200 ${
-              isFavorite ? 'text-red-500' : 'text-gray-700'
-            }`}
-            animate={isFavorite ? { scale: [1, 1.2, 1] } : { scale: 1 }}
-            transition={{ duration: 0.3 }}
+            className="w-6 h-6"
+            animate={{ 
+              color: isFavorite ? '#ef4444' : '#374151',
+              scale: isFavorite ? [1, 1.2, 1] : 1
+            }}
+            transition={{ 
+              color: { duration: 0.2 },
+              scale: { duration: 0.3 }
+            }}
           >
             <path
               strokeLinecap="round"

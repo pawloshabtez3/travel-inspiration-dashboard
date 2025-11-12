@@ -3,9 +3,27 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
+const pageVariants = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -20 }
+};
+
+const pageTransition = {
+  duration: 0.4,
+  ease: 'easeInOut' as const
+};
+
 export default function Home() {
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden">
+    <motion.main 
+      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden"
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      transition={pageTransition}
+    >
       {/* Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500" />
       
@@ -97,6 +115,6 @@ export default function Home() {
         }}
         className="absolute bottom-20 right-10 h-40 w-40 rounded-full bg-white/10 backdrop-blur-md"
       />
-    </main>
+    </motion.main>
   );
 }
