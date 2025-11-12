@@ -66,6 +66,14 @@ export const useStore = create<AppState>()(
 
       // Fetch destinations using Gemini API
       fetchDestinations: async (mood: string) => {
+        const currentState = get();
+        
+        // Check if we already have destinations for this mood (simple cache)
+        if (currentState.selectedMood === mood && currentState.destinations.length > 0) {
+          console.log('Using cached destinations for mood:', mood);
+          return;
+        }
+        
         set({ isLoading: true, error: null, selectedMood: mood });
         
         try {
@@ -75,7 +83,7 @@ export const useStore = create<AppState>()(
           
           const destinations = await getDestinationsByMood(mood);
           
-          // Fetch weather data for each destination
+          // Fetch weather data for each destination in parallel with caching
           const destinationsWithWeather = await Promise.all(
             destinations.map(async (destination) => {
               try {

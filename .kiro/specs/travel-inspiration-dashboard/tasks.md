@@ -272,18 +272,29 @@
     - Prevent API calls when keys are missing
     - _Requirements: 8.1, 8.2, 8.3_
 
-- [ ] 11. Optimize performance
-  - [ ] 11.1 Implement image optimization
+- [x] 11. Optimize performance
+
+
+
+
+
+
+  - [x] 11.1 Implement image optimization
+
     - Configure Next.js Image component with Unsplash domain
     - Add lazy loading to destination images
     - Set appropriate image sizes for responsive breakpoints
     - _Requirements: 3.2_
-  - [ ] 11.2 Optimize API requests
+  - [x] 11.2 Optimize API requests
+
+
     - Implement request debouncing for weather API
     - Cache API responses in store to avoid duplicates
     - Limit Unsplash API query results to 1 per destination
     - _Requirements: 8.4_
-  - [ ] 11.3 Configure Next.js optimizations
+  - [x] 11.3 Configure Next.js optimizations
+
+
     - Set up next.config.js with image domains
     - Enable compression and minification
     - Configure appropriate cache headers

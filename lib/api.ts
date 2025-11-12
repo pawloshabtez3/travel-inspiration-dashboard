@@ -36,6 +36,13 @@ apiClient.interceptors.response.use(
 // Image cache to avoid duplicate API requests
 const imageCache = new Map<string, string>();
 
+// Weather cache to avoid duplicate API requests
+const weatherCache = new Map<string, { data: WeatherData | null; timestamp: number }>();
+const WEATHER_CACHE_TTL = 10 * 60 * 1000; // 10 minutes
+
+// Debounce map for weather requests
+const weatherDebounceMap = new Map<string, Promise<WeatherData | null>>();
+
 // Retry logic helper
 async function retryRequest<T>(
   requestFn: () => Promise<T>,
@@ -73,7 +80,7 @@ export async function fetchDestinationImage(destinationName: string): Promise<st
     const response = await retryRequest(() =>
       apiClient.get(API_ENDPOINTS.UNSPLASH, {
         params: {
-          query: destinationName,
+          query: `${destinationName} travel destination`,
           per_page: 1,
           orientation: CONFIG.IMAGE_ORIENTATION
         },
@@ -101,8 +108,21 @@ export async function fetchDestinationImage(destinationName: string): Promise<st
   }
 }
 
-// OpenWeatherMap API client
+// OpenWeatherMap API client with caching and debouncing
 export async function fetchWeather(cityName: string): Promise<WeatherData | null> {
+  const cacheKey = cityName.toLowerCase().trim();
+  
+  // Check cache first
+  const cached = weatherCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < WEATHER_CACHE_TTL) {
+    return cached.data;
+  }
+  
+  // Check if there's already a pending request for this city (debouncing)
+  if (weatherDebounceMap.has(cacheKey)) {
+    return weatherDebounceMap.get(cacheKey)!;
+  }
+  
   // Validate API key before making request
   if (!hasApiKey('NEXT_PUBLIC_OPENWEATHER_API_KEY')) {
     console.error(getMissingKeyError('NEXT_PUBLIC_OPENWEATHER_API_KEY'));
@@ -111,30 +131,50 @@ export async function fetchWeather(cityName: string): Promise<WeatherData | null
 
   const apiKey = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
 
-  try {
-    const response = await retryRequest(() =>
-      apiClient.get(API_ENDPOINTS.OPENWEATHER, {
-        params: {
-          q: cityName,
-          appid: apiKey,
-          units: CONFIG.WEATHER_UNITS
-        }
-      })
-    );
+  // Create the request promise
+  const requestPromise = (async () => {
+    try {
+      const response = await retryRequest(() =>
+        apiClient.get(API_ENDPOINTS.OPENWEATHER, {
+          params: {
+            q: cityName,
+            appid: apiKey,
+            units: CONFIG.WEATHER_UNITS
+          }
+        })
+      );
 
-    const data = response.data;
+      const data = response.data;
 
-    return {
-      temperature: Math.round(data.main.temp),
-      condition: data.weather[0].main,
-      icon: data.weather[0].icon,
-      humidity: data.main.humidity,
-      windSpeed: data.wind.speed
-    };
-  } catch (error) {
-    console.error('OpenWeatherMap API error:', error);
-    return null;
-  }
+      const weatherData: WeatherData = {
+        temperature: Math.round(data.main.temp),
+        condition: data.weather[0].main,
+        icon: data.weather[0].icon,
+        humidity: data.main.humidity,
+        windSpeed: data.wind.speed
+      };
+      
+      // Cache the result
+      weatherCache.set(cacheKey, { data: weatherData, timestamp: Date.now() });
+      
+      return weatherData;
+    } catch (error) {
+      console.error('OpenWeatherMap API error:', error);
+      
+      // Cache null result to avoid repeated failed requests
+      weatherCache.set(cacheKey, { data: null, timestamp: Date.now() });
+      
+      return null;
+    } finally {
+      // Remove from debounce map after request completes
+      weatherDebounceMap.delete(cacheKey);
+    }
+  })();
+  
+  // Store the promise in debounce map
+  weatherDebounceMap.set(cacheKey, requestPromise);
+  
+  return requestPromise;
 }
 
 // Batch fetch images for multiple destinations
