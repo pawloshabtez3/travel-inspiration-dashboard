@@ -176,16 +176,18 @@ Return ONLY a JSON array with this exact format, no additional text:
 }
 
 // Get fallback destinations when API fails
-function getFallbackDestinations(mood: string): Promise<Destination[]> {
+async function getFallbackDestinations(mood: string): Promise<Destination[]> {
   const suggestions = FALLBACK_SUGGESTIONS[mood] || FALLBACK_SUGGESTIONS.relaxed;
   
-  return Promise.resolve(
-    suggestions.map(suggestion => ({
-      id: generateDestinationId(suggestion.name, suggestion.country),
-      name: suggestion.name,
-      country: suggestion.country,
-      tagline: suggestion.tagline,
-      imageUrl: '' // Will be fetched separately
-    }))
-  );
+  // Fetch images for fallback destinations
+  const destinationNames = suggestions.map(s => s.name);
+  const imageMap = await fetchDestinationImages(destinationNames);
+  
+  return suggestions.map(suggestion => ({
+    id: generateDestinationId(suggestion.name, suggestion.country),
+    name: suggestion.name,
+    country: suggestion.country,
+    tagline: suggestion.tagline,
+    imageUrl: imageMap.get(suggestion.name) || ''
+  }));
 }

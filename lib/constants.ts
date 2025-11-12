@@ -63,6 +63,15 @@ export const API_ENDPOINTS = {
 export const DEFAULT_IMAGE_URL = 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800';
 export const DEFAULT_GRADIENT = 'from-gray-400 to-gray-600';
 
+// Fallback gradient images for when Unsplash API fails
+export const FALLBACK_GRADIENTS = [
+  'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800', // Mountain landscape
+  'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800', // Beach
+  'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800', // Lake
+  'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800', // City
+  'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800', // Paris
+];
+
 // Error Messages
 export const ERROR_MESSAGES = {
   GEMINI_FAILED: 'Unable to fetch destinations. Please try again.',

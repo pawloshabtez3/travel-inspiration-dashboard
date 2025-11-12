@@ -108,10 +108,7 @@ export default function ExplorePage() {
         )}
 
         {/* Destination Grid */}
-        <DestinationGrid 
-          destinations={destinations}
-          isLoading={isLoading}
-        />
+        <DestinationGrid />
       </motion.div>
     </main>
   );

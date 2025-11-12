@@ -108,21 +108,32 @@
     - Implement responsive container layout
     - _Requirements: 1.4, 7.1_
 
-- [ ] 5. Build destination display system
-  - [ ] 5.1 Create DestinationCard component
+- [x] 5. Build destination display system
+
+
+
+
+
+
+
+  - [x] 5.1 Create DestinationCard component
     - Build card layout with image, name, country, and tagline
     - Integrate Next.js Image component for optimized image loading
     - Add favorite button with heart icon
     - Implement hover scale effect (1.05 scale)
     - Style with shadows, rounded corners, and overlay gradients
+
     - _Requirements: 3.1, 3.3, 3.5, 5.1_
-  - [ ] 5.2 Implement DestinationGrid component
+  - [x] 5.2 Implement DestinationGrid component
+
     - Create responsive grid container (1/2/3 columns based on viewport)
     - Map destinations from Zustand store to DestinationCard components
     - Add Framer Motion staggered animations for card entry
     - Handle empty state when no destinations are available
     - _Requirements: 3.1, 3.4, 6.1, 6.2, 6.3, 7.2, 7.3_
-  - [ ] 5.3 Integrate Unsplash API for destination images
+  - [x] 5.3 Integrate Unsplash API for destination images
+
+
     - Fetch images when destinations are loaded into store
     - Update destination objects with imageUrl from Unsplash
     - Implement caching to avoid duplicate API requests

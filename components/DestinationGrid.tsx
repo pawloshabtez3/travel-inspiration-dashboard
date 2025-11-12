@@ -1,14 +1,17 @@
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
-import { Destination } from '@/lib/store';
+import { useStore } from '@/lib/store';
+import { CONFIG } from '@/lib/constants';
+import DestinationCard from './DestinationCard';
 
-interface DestinationGridProps {
-  destinations: Destination[];
-  isLoading: boolean;
-}
+export default function DestinationGrid() {
+  const destinations = useStore((state) => state.destinations);
+  const isLoading = useStore((state) => state.isLoading);
+  const favorites = useStore((state) => state.favorites);
+  const toggleFavorite = useStore((state) => state.toggleFavorite);
 
-export default function DestinationGrid({ destinations, isLoading }: DestinationGridProps) {
+  // Loading state
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -20,6 +23,7 @@ export default function DestinationGrid({ destinations, isLoading }: Destination
     );
   }
 
+  // Empty state
   if (destinations.length === 0) {
     return (
       <div className="text-center py-20">
@@ -30,9 +34,14 @@ export default function DestinationGrid({ destinations, isLoading }: Destination
     );
   }
 
+  // Check if destination is favorited
+  const isFavorite = (destinationId: string) => {
+    return favorites.some(fav => fav.id === destinationId);
+  };
+
   return (
     <motion.div
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-4 lg:gap-6"
       initial="hidden"
       animate="visible"
       variants={{
@@ -40,26 +49,19 @@ export default function DestinationGrid({ destinations, isLoading }: Destination
         visible: {
           opacity: 1,
           transition: {
-            staggerChildren: 0.1
+            staggerChildren: CONFIG.STAGGER_DELAY
           }
         }
       }}
     >
       <AnimatePresence mode="wait">
         {destinations.map((destination) => (
-          <motion.div
+          <DestinationCard
             key={destination.id}
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 }
-            }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            className="bg-white rounded-xl shadow-md p-4 hover:shadow-xl transition-shadow"
-          >
-            <h3 className="text-xl font-semibold text-gray-800">{destination.name}</h3>
-            <p className="text-gray-600">{destination.country}</p>
-            <p className="text-sm text-gray-500 mt-2">{destination.tagline}</p>
-          </motion.div>
+            destination={destination}
+            isFavorite={isFavorite(destination.id)}
+            onToggleFavorite={() => toggleFavorite(destination)}
+          />
         ))}
       </AnimatePresence>
     </motion.div>

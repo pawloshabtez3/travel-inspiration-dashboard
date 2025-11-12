@@ -32,6 +32,9 @@ apiClient.interceptors.response.use(
   }
 );
 
+// Image cache to avoid duplicate API requests
+const imageCache = new Map<string, string>();
+
 // Retry logic helper
 async function retryRequest<T>(
   requestFn: () => Promise<T>,
@@ -48,8 +51,14 @@ async function retryRequest<T>(
   }
 }
 
-// Unsplash API client
+// Unsplash API client with caching
 export async function fetchDestinationImage(destinationName: string): Promise<string> {
+  // Check cache first
+  const cacheKey = destinationName.toLowerCase().trim();
+  if (imageCache.has(cacheKey)) {
+    return imageCache.get(cacheKey)!;
+  }
+
   const apiKey = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY;
   
   if (!apiKey) {
@@ -75,12 +84,16 @@ export async function fetchDestinationImage(destinationName: string): Promise<st
     
     if (!imageUrl) {
       console.warn(`No image found for ${destinationName}`);
+      imageCache.set(cacheKey, DEFAULT_IMAGE_URL);
       return DEFAULT_IMAGE_URL;
     }
 
+    // Cache the result
+    imageCache.set(cacheKey, imageUrl);
     return imageUrl;
   } catch (error) {
     console.error('Unsplash API error:', error);
+    imageCache.set(cacheKey, DEFAULT_IMAGE_URL);
     return DEFAULT_IMAGE_URL;
   }
 }
